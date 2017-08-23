@@ -183,7 +183,7 @@
                 {
                     await Application.Current.MainPage.DisplayAlert(
                     "Error",
-                    "You must enter a value in amount",
+                    "You must enter a value in amount.",
                     "Accept");
                 return;
                 }
@@ -193,7 +193,7 @@
                     {
 				    await Application.Current.MainPage.DisplayAlert(
                                 "Error",
-                                "You must enter a numeric value in amount",
+                                "You must enter a numeric value in amount.",
                                 "Accept");
 			        return;
              }

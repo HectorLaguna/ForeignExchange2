@@ -65,7 +65,7 @@
                 BackgroundColor="Silver"
                 FontSize="Large"
                 HorizontalTextAlignment="Center"
-                Margin="0,10"
+                Margin="10,10"
                 Text="{Binding Result, Mode=TwoWay}"
                 VerticalOptions="FillAndExpand"
                 VerticalTextAlignment="Center">
