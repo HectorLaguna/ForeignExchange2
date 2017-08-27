@@ -7,9 +7,38 @@ namespace ForeignExchange2
     using System.Threading.Tasks;
 	using ForeignExchange2.Models;
     using Newtonsoft.Json;
-	
+    using Plugin.Connectivity;
+
     public class ApiService
     {
+
+        public async Task<Response> CheckConnection()
+        {
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                return new Response
+                {
+                    IsSucces = false,
+                    Message = "Check your internet settings",
+                };
+            }
+
+            var response = await CrossConnectivity.Current.IsReachable("google.com");
+            if(!response)
+            {
+                return new Response
+                {
+                    IsSucces = false,
+                    Message = "Check your internet connection",
+                };
+            }
+
+            return new Response
+            {
+                IsSucces = true,
+            };
+        }
+
         public async Task<Response> GetList<T>(string urlBase, string controller)
         {
 			try
@@ -27,7 +56,7 @@ namespace ForeignExchange2
                     };
                 }
 
-                var list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(result);
+                var list = JsonConvert.DeserializeObject<List<T>>(result);
                 return new Response
                 {
                     IsSucces = true,

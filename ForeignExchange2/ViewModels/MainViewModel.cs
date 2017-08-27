@@ -188,9 +188,18 @@
             IsRunning=true;
             Result = "Loading rates...";
 
+            var connection = await apiService.CheckConnection();
+            if (!connection.IsSucces)
+            {
+				IsRunning = false;
+                Result = connection.Message;
+				return;
+			}
+
             var response = await apiService.GetList<Rate>(
                 "http://apiexchangerates.azurewebsites.net", 
                 "api/Rates");
+            
             if (!response.IsSucces)
             {
                 IsRunning = false;
@@ -202,6 +211,7 @@
             IsEnabled = true;
             IsRunning = false;
 			Result = "Ready to convert";
+            Status = "Rates loaded from internet";
 		}
         #endregion
 
