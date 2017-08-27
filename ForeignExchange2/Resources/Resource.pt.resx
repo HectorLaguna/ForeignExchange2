@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+    <data name="Title" xml:space="preserve">
+        <value>Câmbio</value>
+    </data> 
+    <data name="AmountValidation" xml:space="preserve">
+        <value>Você deve inserir um valor em quantidade.</value>
+    </data> 
+    <data name="Error" xml:space="preserve">
+        <value>Erro</value>
+    </data> 
+    <data name="Accept" xml:space="preserve">
+        <value>Aceitar</value>
+    </data> 
+    <data name="AmountNumericValidation" xml:space="preserve">
+        <value>Você deve inserir um valor numérico em quantidade.</value>
+    </data> 
+    <data name="SourceRateValidation" xml:space="preserve">
+        <value>VVocê deve selecionar uma taxa de origem.</value>
+    </data> 
+    <data name="TargetRateValidation" xml:space="preserve">
+        <value>Você deve selecionar uma taxa de destino.</value>
+    </data> 
+    <data name="AmountLabel" xml:space="preserve">
+        <value>Montante:</value>
+    </data> 
+    <data name="AmountPlaceHolder" xml:space="preserve">
+        <value>Digite o montante...</value>
+    </data> 
+    <data name="SourceRateLabel" xml:space="preserve">
+        <value>Taxa de origem: :</value>
+    </data> 
+    <data name="SourceRateTitle" xml:space="preserve">
+        <value>Taxa de origem...</value>
+    </data> 
+    <data name="TargetRateLabel" xml:space="preserve">
+        <value>Taxa de destino:</value>
+    </data> 
+    <data name="TargetRateTitle" xml:space="preserve">
+        <value>Taxa de destino...</value>
+    </data> 
+    <data name="Convert" xml:space="preserve">
+        <value>Converter</value>
+    </data> 
+    <data name="Loading" xml:space="preserve">
+        <value>Taxas de carregamento...</value>
+    </data> 
+    <data name="Ready" xml:space="preserve">
+        <value>Pronto para converter!</value>
+    </data> 
+
+</root>

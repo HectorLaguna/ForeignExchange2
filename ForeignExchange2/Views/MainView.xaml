@@ -29,9 +29,9 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width=".9*"/>
+                    <ColumnDefinition Width=".7*"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width=".6*"/>
+                    <ColumnDefinition Width=".7*"/>
                 </Grid.ColumnDefinitions>
             <Label
                     Grid.Column="0"
@@ -78,9 +78,9 @@
                     Grid.Column="2"
                     Grid.Row="1"
                     Grid.RowSpan="2"
-                    HeightRequest="40"
+                    HeightRequest="20"
                     Source="change.png"
-                    WidthRequest="40">
+                    WidthRequest="20">
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SwitchCommand}"/>
                     </Image.GestureRecognizers>
