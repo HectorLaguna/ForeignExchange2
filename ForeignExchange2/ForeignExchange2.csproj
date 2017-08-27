@@ -66,6 +66,9 @@
     <Compile Include="Interfaces\ILocalize.cs" />
     <Compile Include="Helpers\PlatformCulture.cs" />
     <Compile Include="Helpers\Lenguages.cs" />
+    <Compile Include="Helpers\TranslateExtension.cs" />
+    <Compile Include="ApiService.cs" />
+    <Compile Include="Models\Response.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.ServiceLocation">

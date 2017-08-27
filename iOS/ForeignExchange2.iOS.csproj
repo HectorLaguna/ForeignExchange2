@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="Implementations\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -118,6 +119,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Implementations\Localize.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\change.png" />

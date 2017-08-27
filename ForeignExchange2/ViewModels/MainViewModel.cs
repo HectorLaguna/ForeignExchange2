@@ -4,29 +4,52 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using System.Net.Http;
     using System.Windows.Input;
+    using ForeignExchange2.Helpers;
     using GalaSoft.MvvmLight.Command;
     using Models;
-    using Newtonsoft.Json;
     using Xamarin.Forms;
 
     public class MainViewModel : INotifyPropertyChanged
     {
         #region Events
         public event PropertyChangedEventHandler PropertyChanged;
-		#endregion
+        #endregion
 
-		#region Attributes
-		bool _isRunning;
+        #region Services
+        ApiService apiService;
+        #endregion
+
+        #region Attributes
+        bool _isRunning;
 		bool _isEnabled;
 		string _result;
         ObservableCollection<Rate> _rates;
         Rate _SourceRate;
         Rate _TargetRate;
+        string _Status;
         #endregion
 
         #region Properties
+
+        public String Status
+        {
+			get
+			{
+                return _Status;
+			}
+			set
+			{
+				if (_Status != value)
+				{
+                    _Status = value;
+					PropertyChanged?.Invoke(
+						  this,
+						  new PropertyChangedEventArgs(nameof(Status)));
+
+				}
+			}
+		}
 
         public string Amount
         {
@@ -153,6 +176,7 @@
         #region Constructors
         public MainViewModel()
         {
+            apiService = new ApiService();
             LoadRates();
         }
 
@@ -164,34 +188,21 @@
             IsRunning=true;
             Result = "Loading rates...";
 
-            try
-            {
-                var client = new HttpClient();
-                client.BaseAddress = new 
-                    Uri("http://apiexchangerates.azurewebsites.net");
-                var controller = "/api/Rates";
-                var response = await client.GetAsync(controller);
-                var result = await response.Content.ReadAsStringAsync();
-                if(!response.IsSuccessStatusCode)
-                {
-					IsRunning = false;
-                    Result = result;
-				}
-
-                var rates = JsonConvert.DeserializeObject<List<Rate>>(result);
-                Rates = new ObservableCollection<Rate>(rates);
-
-				IsRunning = false;
-				IsEnabled = true;
-				Result = "Ready to convert!";
-
-    			}
-            catch (Exception ex)
+            var response = await apiService.GetList<Rate>(
+                "http://apiexchangerates.azurewebsites.net", 
+                "api/Rates");
+            if (!response.IsSucces)
             {
                 IsRunning = false;
-                Result = ex.Message;
-			}
-        }
+                Result = response.Message;
+                return;
+            }
+
+            Rates = new ObservableCollection<Rate>((List<Rate>)response.Result);
+            IsEnabled = true;
+            IsRunning = false;
+			Result = "Ready to convert";
+		}
         #endregion
 
         #region Commands
@@ -226,9 +237,9 @@
                 if (string.IsNullOrEmpty(Amount))
                 {
                     await Application.Current.MainPage.DisplayAlert(
-                    "Error",
-                    "You must enter a value in amount.",
-                    "Accept");
+                    Lenguages.Error,
+                    Lenguages.AmountValidation,
+                    Lenguages.Accept);
                 return;
                 }
 
