@@ -22,6 +22,8 @@
 		bool _isEnabled;
 		string _result;
         ObservableCollection<Rate> _rates;
+        Rate _SourceRate;
+        Rate _TargetRate;
         #endregion
 
         #region Properties
