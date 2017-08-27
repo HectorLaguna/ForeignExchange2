@@ -55,15 +55,41 @@
 
         public Rate SourceRate
         {
-            get;
-            set;
-        }
+			get
+			{
+                return _SourceRate;
+			}
+			set
+			{
+                if (_SourceRate != value)
+				{
+                    _SourceRate = value;
+					PropertyChanged?.Invoke(
+						  this,
+						  new PropertyChangedEventArgs(nameof(SourceRate)));
+
+				}
+			}
+		}
 
         public Rate TargetRate
         {
-            get;
-            set;
-        }
+			get
+			{
+                return _TargetRate;
+			}
+			set
+			{
+                if (_TargetRate != value)
+				{
+                    _TargetRate = value;
+					PropertyChanged?.Invoke(
+						  this,
+						  new PropertyChangedEventArgs(nameof(TargetRate)));
+
+				}
+			}
+		}
 
         public bool IsRunning
         {
