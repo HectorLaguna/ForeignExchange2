@@ -168,6 +168,22 @@
 
         #region Commands
 
+        public ICommand SwitchCommand
+        {
+			get
+			{
+				return new RelayCommand(Switch);
+			}
+		}
+
+        void Switch()
+        {
+            var aux = SourceRate;
+            SourceRate = TargetRate;
+            TargetRate = aux;
+            Convert();
+        }
+
         public ICommand ConvertCommmand
         {
             get
