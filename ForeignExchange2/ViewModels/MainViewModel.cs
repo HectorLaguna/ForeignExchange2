@@ -4,8 +4,10 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using ForeignExchange2.Helpers;
+    using ForeignExchange2.Services;
     using GalaSoft.MvvmLight.Command;
     using Models;
     using Xamarin.Forms;
@@ -18,16 +20,19 @@
 
         #region Services
         ApiService apiService;
-        #endregion
+        DialogService dialogService;
+		DataService dataService;
+		#endregion
 
-        #region Attributes
-        bool _isRunning;
+		#region Attributes
+		bool _isRunning;
 		bool _isEnabled;
 		string _result;
         ObservableCollection<Rate> _rates;
-        Rate _SourceRate;
-        Rate _TargetRate;
-        string _Status;
+        Rate _sourceRate;
+        Rate _targetRate;
+        string _status;
+        List<Rate> rates;
         #endregion
 
         #region Properties
@@ -36,13 +41,13 @@
         {
 			get
 			{
-                return _Status;
+                return _status;
 			}
 			set
 			{
-				if (_Status != value)
+                if (_status != value)
 				{
-                    _Status = value;
+                    _status = value;
 					PropertyChanged?.Invoke(
 						  this,
 						  new PropertyChangedEventArgs(nameof(Status)));
@@ -80,13 +85,13 @@
         {
 			get
 			{
-                return _SourceRate;
+                return _sourceRate;
 			}
 			set
 			{
-                if (_SourceRate != value)
+                if (_sourceRate != value)
 				{
-                    _SourceRate = value;
+                    _sourceRate = value;
 					PropertyChanged?.Invoke(
 						  this,
 						  new PropertyChangedEventArgs(nameof(SourceRate)));
@@ -99,13 +104,13 @@
         {
 			get
 			{
-                return _TargetRate;
+                return _targetRate;
 			}
 			set
 			{
-                if (_TargetRate != value)
+                if (_targetRate != value)
 				{
-                    _TargetRate = value;
+                    _targetRate = value;
 					PropertyChanged?.Invoke(
 						  this,
 						  new PropertyChangedEventArgs(nameof(TargetRate)));
@@ -177,7 +182,10 @@
         public MainViewModel()
         {
             apiService = new ApiService();
-            LoadRates();
+			dataService = new DataService();
+            dialogService = new DialogService();
+
+			LoadRates();
         }
 
         #endregion
@@ -189,29 +197,60 @@
             Result = "Loading rates...";
 
             var connection = await apiService.CheckConnection();
+
             if (!connection.IsSucces)
             {
-				IsRunning = false;
-                Result = connection.Message;
-				return;
-			}
+                LoadLocalData();
+            }
+            else
+            {
+                await LoadDataFromAPI();
+            }
 
-            var response = await apiService.GetList<Rate>(
-                "http://apiexchangerates.azurewebsites.net", 
-                "api/Rates");
-            
-            if (!response.IsSucces)
+            if (rates.Count == 0)
             {
                 IsRunning = false;
-                Result = response.Message;
+                IsEnabled = false;
+                Result = "There are nither internet connection nor previusly"+
+                    "loadad rates, please try again...";
+                Status = "No rates loaded";
                 return;
             }
 
-            Rates = new ObservableCollection<Rate>((List<Rate>)response.Result);
-            IsEnabled = true;
+            Rates = new ObservableCollection<Rate>(rates);
+
             IsRunning = false;
-			Result = "Ready to convert";
-            Status = "Rates loaded from internet";
+            IsEnabled = true;
+            Result = "Ready to Convert";
+		}
+
+        void LoadLocalData()
+
+        {
+            rates = dataService.Get<Rate>(false);
+            Status = "Rates loaded from local date";
+        }
+
+        async Task LoadDataFromAPI()
+        {
+			var url = "http://apiexchangerates.azurewebsites.net";  //Application.Current.Resources["URLAPI"].ToString();
+
+			var response = await apiService.GetList<Rate>(
+				url,
+				"/api/Rates");
+
+            if (!response.IsSucces)
+            {
+                LoadLocalData();
+                return;
+            }
+
+			//Storage data locally
+			rates = (List<Rate>)response.Result;
+			dataService.DeleteAll<Rate>();
+			dataService.Save(rates);
+
+            Status = "Rates Loaded from internet";
 		}
         #endregion
 
@@ -246,38 +285,36 @@
             {
                 if (string.IsNullOrEmpty(Amount))
                 {
-                    await Application.Current.MainPage.DisplayAlert(
-                    Lenguages.Error,
-                    Lenguages.AmountValidation,
-                    Lenguages.Accept);
-                return;
+
+                    await dialogService.ShowMessage(
+                        Lenguages.Error,
+                        Lenguages.AmountValidation);
+    				return;
+
                 }
 
                     decimal amount = 0;
                     if (!decimal.TryParse(Amount, out amount))
                     {
-				    await Application.Current.MainPage.DisplayAlert(
-                                "Error",
-                                "You must enter a numeric value in amount.",
-                                "Accept");
-			        return;
+                        await dialogService.ShowMessage(
+                              "Error",
+                              "You must enter a numeric value in amount.");
+			            return;
              }
 
                     if (SourceRate == null)
 			        {
-				        await Application.Current.MainPage.DisplayAlert(
+                await dialogService.ShowMessage(
 				        "Error",
-				        "You must select a source rate.",
-				        "Accept");
+				        "You must select a source rate.");
 			        return;
 			        }
 
                     if (TargetRate == null)
 			{
-				    await Application.Current.MainPage.DisplayAlert(
+                await dialogService.ShowMessage(
 				    "Error",
-				    "You must select a target rate.",
-				    "Accept");
+				    "You must select a target rate.");
 				    return;
 			}
 
